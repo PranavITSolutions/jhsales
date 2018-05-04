@@ -75,5 +75,35 @@ namespace JH_CRM_API.Controllers
         //    }
         //    return response;
         //}
+        
+        public async Task<HttpResponseMessage> GetCount(string id)
+        {
+            HttpResponseMessage response = null;
+            try
+            {
+                response = Request.CreateResponse(HttpStatusCode.OK, new JHResponseMessage("JH_001", "Success", ActivityRepo.getActivityDocuments()));
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception.GetBaseException());
+                response = Request.CreateResponse(HttpStatusCode.InternalServerError, new JHResponseMessage("JH_101", "Application Error", exception.Message));
+            }
+            return response;
+        }
+        [Route("api/get/Productcount")]
+        public HttpResponseMessage GetProductCount()
+        {
+            HttpResponseMessage response = null;
+            try
+            {
+                response = Request.CreateResponse(HttpStatusCode.OK, new JHResponseMessage("JH_001", "Success", ActivityRepo.getProductCount() ));
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception.GetBaseException());
+                response = Request.CreateResponse(HttpStatusCode.InternalServerError, new JHResponseMessage("JH_101", "Application Error", exception.Message));
+            }
+            return response;
+        }
     }
 }

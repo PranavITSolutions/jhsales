@@ -97,5 +97,25 @@ namespace JH_CRM_API.Repository
                 throw exception;
             }
         }
+        
+        public static int getProductCount()
+        {//STRATEGY_ID
+            try
+            {
+                //var query = client.CreateDocumentQuery<Activity>(UriFactory.CreateDocumentCollectionUri(database, collection));
+                var query = client.CreateDocumentQuery<Activity>(UriFactory.CreateDocumentCollectionUri(database, collection)).Select(c => new Activity()
+                {
+                    MDH_MSTR_PRODUCT_ID = c.MDH_MSTR_PRODUCT_ID
+                }).AsEnumerable().Distinct();
+                //return query.ToList();
+                int count= query.ToList().Count();
+                return count;
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine("Error querying DB: {0}\r\n", exception.Message.ToString());
+                throw exception;
+            }
+        }
     }
 }

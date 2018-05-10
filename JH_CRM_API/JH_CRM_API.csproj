@@ -195,6 +195,8 @@
     </Content>
     <None Include="Properties\PublishProfiles\jhsalesapi - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\jhsalesapi - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\jhsalesbotapi - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\jhsalesbotapi - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -39,6 +39,143 @@ namespace JH_CRM_API.ChatDialogs
         }
 
 
+        [LuisIntent("TopClients")]
+        public async Task TopCustomersIntent(IDialogContext context, LuisResult result)
+        {
+            try
+            {
+                await context.PostAsync("Checking for Top performing clients...");
+                List<ActivityDTO> activities = BotRepo.GetTopClientList();
+                var message = context.MakeMessage();
+                message.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+
+                foreach (ActivityDTO activityDTO in activities)
+                {
+                    message.Attachments.Add(new HeroCard
+                    {
+                        Title = activityDTO.customerName,
+                        //  Subtitle = "Your bots — wherever your users are talking",
+                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score) + ",\n         " + " Meetings/Calls Count : " + activityDTO.count,
+                        //Images = new List<CardImage> { new CardImage(Constants.JH_LOGO) },
+
+                        //Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "View",
+                        //        value: finance.fact_sheet_url) },
+                        //Tap = new CardAction(ActionTypes.OpenUrl, "",
+                        //value: finance.fact_sheet_url                                           
+                    }.ToAttachment());
+                }
+                await context.PostAsync(message);
+            }
+            catch (Exception)
+            {
+                await this.ShowLuisResult(context, "Bot returning an error. Please check later. Sorry!");
+            }
+        }
+
+
+        [LuisIntent("ClientsToFocus")]
+        public async Task ClientsToFocusIntent(IDialogContext context, LuisResult result)
+        {
+            try
+            {
+                await context.PostAsync("Checking for clients...");
+                List<ActivityDTO> activities = BotRepo.GetClientsToFocusList();
+                var message = context.MakeMessage();
+                message.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+
+                foreach (ActivityDTO activityDTO in activities)
+                {
+                    message.Attachments.Add(new HeroCard
+                    {
+                        Title = activityDTO.customerName,
+                        //  Subtitle = "Your bots — wherever your users are talking",
+                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score) + ",\n         " + " Meetings/Calls Count : " + activityDTO.count,
+                        //Images = new List<CardImage> { new CardImage(Constants.JH_LOGO) },
+
+                        //Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "View",
+                        //        value: finance.fact_sheet_url) },
+                        //Tap = new CardAction(ActionTypes.OpenUrl, "",
+                        //value: finance.fact_sheet_url                                           
+                    }.ToAttachment());
+                }
+                await context.PostAsync(message);
+            }
+            catch (Exception)
+            {
+                await this.ShowLuisResult(context, "Bot returning an error. Please check later. Sorry!");
+            }
+        }
+
+
+        [LuisIntent("NeedTraining")]
+        public async Task NeedTrainingIntent(IDialogContext context, LuisResult result)
+        {
+            try
+            {
+                await context.PostAsync("Checking for Sales Rep who needs training...");
+                List<ActivityDTO> activities = BotRepo.GetSalesRepNeedsTraining();
+                var message = context.MakeMessage();
+                message.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+
+                foreach (ActivityDTO activityDTO in activities)
+                {
+                    message.Attachments.Add(new HeroCard
+                    {
+                        Title = activityDTO.customerName,
+                        //  Subtitle = "Your bots — wherever your users are talking",
+                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score) + ",\n         " + " Meetings/Calls Count : " + activityDTO.count,
+                        //Images = new List<CardImage> { new CardImage(Constants.JH_LOGO) },
+
+                        //Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "View",
+                        //        value: finance.fact_sheet_url) },
+                        //Tap = new CardAction(ActionTypes.OpenUrl, "",
+                        //value: finance.fact_sheet_url                                           
+                    }.ToAttachment());
+                }
+                await context.PostAsync(message);
+            }
+            catch (Exception)
+            {
+                await this.ShowLuisResult(context, "Bot returning an error. Please check later. Sorry!");
+            }
+        }
+
+
+        [LuisIntent("TopSalesRep")]
+        public async Task TopPerformingSalesRepIntent(IDialogContext context, LuisResult result)
+        {
+            try
+            {
+                await context.PostAsync("Checking for Sales Rep who performs well...");
+                List<ActivityDTO> activities = BotRepo.GetTopPerformingSalesRep();
+                var message = context.MakeMessage();
+                message.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+
+                foreach (ActivityDTO activityDTO in activities)
+                {
+                    message.Attachments.Add(new HeroCard
+                    {
+                        Title = activityDTO.customerName,
+                        //  Subtitle = "Your bots — wherever your users are talking",
+                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score) + ",\n         " + " Meetings/Calls Count : " + activityDTO.count,
+                        //Images = new List<CardImage> { new CardImage(Constants.JH_LOGO) },
+
+                        //Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "View",
+                        //        value: finance.fact_sheet_url) },
+                        //Tap = new CardAction(ActionTypes.OpenUrl, "",
+                        //value: finance.fact_sheet_url                                           
+                    }.ToAttachment());
+                }
+                await context.PostAsync(message);
+            }
+            catch (Exception)
+            {
+                await this.ShowLuisResult(context, "Bot returning an error. Please check later. Sorry!");
+            }
+        }
+
+
+
         [LuisIntent("CheckClientPerformance")]
         public async Task CheckClientPerformanceIntent(IDialogContext context, LuisResult result)
         {
@@ -94,15 +231,15 @@ namespace JH_CRM_API.ChatDialogs
                         var message = context.MakeMessage();
                         List<string> dataList = new List<string>();
 
-                        dataList.Add("Client Name : " + activityDTO.customerName + "\n      ");
-                        dataList.Add("Business Unit : " + activityDTO.businessUnit + "\n      ");
-                        dataList.Add("Mettings/Calls Count : " + activityDTO.count + "\n      ");
+                        dataList.Add("Client Name : " + activityDTO.customerName + ",\n      ");
+                        dataList.Add("Business Unit : " + activityDTO.businessUnit + ",\n      ");
+                        dataList.Add("Mettings/Calls Count : " + activityDTO.count + ",\n      ");
                         dataList.Add("Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score.Value) + "\n      ");
 
                         HeroCard card = new HeroCard()
                         {
                             Title = "Performance for Client " + customerName,
-                            Text = string.Join("     ", dataList)
+                            Text = string.Join("\n     ", dataList)
                         };
 
                         message.Attachments.Add(card.ToAttachment());
@@ -196,15 +333,15 @@ namespace JH_CRM_API.ChatDialogs
                         var message = context.MakeMessage();
                         List<string> dataList = new List<string>();
 
-                        dataList.Add("Sales Rep ID : " + activityDTO.repId + "<br>");
+                        dataList.Add("Sales Rep ID : " + activityDTO.repId + ",\n       ");
                         //dataList.Add("Business Unit : " + activityDTO.businessUnit + ",<br>");
-                        dataList.Add("Mettings/Calls Count : " + activityDTO.count + ",<br>");
-                        dataList.Add("Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score.Value) + "<br>");
+                        dataList.Add("Mettings/Calls Count : " + activityDTO.count + ",\n       ");
+                        dataList.Add("Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score.Value));
 
                         HeroCard card = new HeroCard()
                         {
                             Title = "Performance for Sales Rep ID" + agentID,
-                            Text = string.Join("     ", dataList)
+                            Text = string.Join("\n      ", dataList)
                         };
 
                         message.Attachments.Add(card.ToAttachment());
@@ -284,7 +421,7 @@ namespace JH_CRM_API.ChatDialogs
                     {
                         Title = activityDTO.businessUnit,
                         //  Subtitle = "Your bots — wherever your users are talking",
-                        Text = "Overall Sentiment Score : "+ String.Format("{0:0.##}", activityDTO.score) +"\n         "+ " Meetings/Calls Count : " + activityDTO.count,
+                        Text = "Overall Sentiment Score : "+ String.Format("{0:0.##}", activityDTO.score) +",\n         "+ " Meetings/Calls Count : " + activityDTO.count,
                         //Images = new List<CardImage> { new CardImage(Constants.JH_LOGO) },
 
                         //Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "View",
@@ -333,6 +470,10 @@ namespace JH_CRM_API.ChatDialogs
                     new CardAction(ActionTypes.ImBack, title: Constants.ACTION_CHECK_CLIENT_PERFORMANCE, value: Constants.ACTION_CHECK_CLIENT_PERFORMANCE),
                     new CardAction(ActionTypes.ImBack, title: Constants.ACTION_CHECK_SALESREP_PERFORMANCE, value: Constants.ACTION_CHECK_SALESREP_PERFORMANCE),
                     new CardAction(ActionTypes.ImBack, title: Constants.ACTION_PERFORMANCE_BY_BU, value: Constants.ACTION_PERFORMANCE_BY_BU),
+                    new CardAction(ActionTypes.ImBack, title: Constants.ACTION_TOP_CLIENTS, value: Constants.ACTION_TOP_CLIENTS),
+                    new CardAction(ActionTypes.ImBack, title: Constants.ACTION_CLIENTS_TO_FOCUS, value: Constants.ACTION_CLIENTS_TO_FOCUS),
+                     new CardAction(ActionTypes.ImBack, title: Constants.ACTION_TOP_SALES_REP, value: Constants.ACTION_TOP_SALES_REP),
+                    new CardAction(ActionTypes.ImBack, title: Constants.ACTION_SALESREP_NEEDS_TRAINING, value: Constants.ACTION_SALESREP_NEEDS_TRAINING),
                     new CardAction(ActionTypes.ImBack, Constants.ACTION_GET_MARKET_INSIGHTS, value: Constants.ACTION_GET_MARKET_INSIGHTS),
                     new CardAction(ActionTypes.ImBack, Constants.ACTION_INVESTING_GUIDE, value: Constants.ACTION_INVESTING_GUIDE),
                     new CardAction(ActionTypes.ImBack, title: Constants.ACTION_GET_FACTSHEET, value: Constants.ACTION_GET_FACTSHEET),
@@ -773,7 +914,7 @@ namespace JH_CRM_API.ChatDialogs
                 }
                 await context.PostAsync(message);
                 context.ConversationData.SetValue("lastIntent", Constants.FACTSHEET);
-                await context.PostAsync("Want to check specific factsheet?");
+              //  await context.PostAsync("Want to check specific factsheet?");
             }
             catch (Exception)
             {
@@ -844,7 +985,7 @@ namespace JH_CRM_API.ChatDialogs
 
                 await context.PostAsync(postfolioMessage);
                 context.ConversationData.SetValue("lastIntent", Constants.PORTFOLIO);
-                await context.PostAsync("Want to check specific portfolio?");
+              //  await context.PostAsync("Want to check specific portfolio?");
             }
             catch (Exception)
             {
@@ -914,7 +1055,7 @@ namespace JH_CRM_API.ChatDialogs
                 }
                 await context.PostAsync(reportMessage);
                 context.ConversationData.SetValue("lastIntent", Constants.ANNUALREPORT);
-                await context.PostAsync("Want to check specific annual report?");
+               // await context.PostAsync("Want to check specific annual report?");
             }
             catch (Exception)
             {
@@ -983,7 +1124,7 @@ namespace JH_CRM_API.ChatDialogs
                 }
                 await context.PostAsync(holdingsMessage);
                 context.ConversationData.SetValue("lastIntent", Constants.FUNDHOLDING);
-                await context.PostAsync("Want to check specific fund holding?");
+            //    await context.PostAsync("Want to check specific fund holding?");
             }
             catch (Exception)
             {
@@ -1210,7 +1351,22 @@ namespace JH_CRM_API.ChatDialogs
                             isIntentMatched = true;
                             await this.PerformanceByBUIntent(context,null);
                             break;
-                    
+                        case Constants.INTENT_TOP_CLIENTS:
+                            isIntentMatched = true;
+                            await this.TopCustomersIntent(context, null);
+                            break;
+                        case Constants.INTENT_CLIENTS_TO_FOCUS:
+                            isIntentMatched = true;
+                            await this.ClientsToFocusIntent(context, null);
+                            break;
+                        case Constants.INTENT_TOP_SALESREP:
+                            isIntentMatched = true;
+                            await this.TopPerformingSalesRepIntent(context, null);
+                            break;
+                        case Constants.INTENT_SALESREP_NEEDS_TRAINING:
+                            isIntentMatched = true;
+                            await this.NeedTrainingIntent(context, null);
+                            break;
 
                             //case Constants.INTENT_THANK:
                             //    isIntentMatched = true;

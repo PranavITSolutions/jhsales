@@ -55,7 +55,7 @@ namespace JH_CRM_API.ChatDialogs
                     {
                         Title = activityDTO.customerName,
                         //  Subtitle = "Your bots — wherever your users are talking",
-                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score) + ",\n         " + " Meetings/Calls Count : " + activityDTO.count,
+                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score) + ",<br>          " + " Meetings/Calls Count : " + activityDTO.count,
                         //Images = new List<CardImage> { new CardImage(Constants.JH_LOGO) },
 
                         //Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "View",
@@ -89,7 +89,7 @@ namespace JH_CRM_API.ChatDialogs
                     {
                         Title = activityDTO.customerName,
                         //  Subtitle = "Your bots — wherever your users are talking",
-                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score) + ",\n         " + " Meetings/Calls Count : " + activityDTO.count,
+                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score) + ",<br>          " + " Meetings/Calls Count : " + activityDTO.count,
                         //Images = new List<CardImage> { new CardImage(Constants.JH_LOGO) },
 
                         //Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "View",
@@ -123,7 +123,7 @@ namespace JH_CRM_API.ChatDialogs
                     {
                         Title = activityDTO.customerName,
                         //  Subtitle = "Your bots — wherever your users are talking",
-                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score) + ",\n         " + " Meetings/Calls Count : " + activityDTO.count,
+                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score) + ",<br>           " + " Meetings/Calls Count : " + activityDTO.count,
                         //Images = new List<CardImage> { new CardImage(Constants.JH_LOGO) },
 
                         //Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "View",
@@ -157,7 +157,7 @@ namespace JH_CRM_API.ChatDialogs
                     {
                         Title = activityDTO.customerName,
                         //  Subtitle = "Your bots — wherever your users are talking",
-                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score) + ",\n         " + " Meetings/Calls Count : " + activityDTO.count,
+                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score) + ",<br>       " + " Meetings/Calls Count : " + activityDTO.count,
                         //Images = new List<CardImage> { new CardImage(Constants.JH_LOGO) },
 
                         //Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "View",
@@ -231,10 +231,10 @@ namespace JH_CRM_API.ChatDialogs
                         var message = context.MakeMessage();
                         List<string> dataList = new List<string>();
 
-                        dataList.Add("Client Name : " + activityDTO.customerName + ",\n      ");
-                        dataList.Add("Business Unit : " + activityDTO.businessUnit + ",\n      ");
-                        dataList.Add("Mettings/Calls Count : " + activityDTO.count + ",\n      ");
-                        dataList.Add("Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score.Value) + "\n      ");
+                        dataList.Add("Client Name : " + activityDTO.customerName + ",<br>       ");
+                        dataList.Add("Business Unit : " + activityDTO.businessUnit + ",<br>        ");
+                        dataList.Add("Mettings/Calls Count : " + activityDTO.count + ",<br>       ");
+                        dataList.Add("Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score.Value));
 
                         HeroCard card = new HeroCard()
                         {
@@ -244,6 +244,10 @@ namespace JH_CRM_API.ChatDialogs
 
                         message.Attachments.Add(card.ToAttachment());
                         await context.PostAsync(message);
+                        PromptDialog.Choice<string>(context, ResumeAfterCustomerCheckConfirmation,
+                                          new PromptOptions<string>("Would you like to check for another Client?",
+                                          "Selected action not available. Please choose another.", "Let me get you there...",
+                                          Constants.CONFIRMATION_OPTIONS, 0));
                     }
                     else
                     {
@@ -333,9 +337,9 @@ namespace JH_CRM_API.ChatDialogs
                         var message = context.MakeMessage();
                         List<string> dataList = new List<string>();
 
-                        dataList.Add("Sales Rep ID : " + activityDTO.repId + ",\n       ");
+                        dataList.Add("Sales Rep ID : " + activityDTO.repId + ",<br>        ");
                         //dataList.Add("Business Unit : " + activityDTO.businessUnit + ",<br>");
-                        dataList.Add("Mettings/Calls Count : " + activityDTO.count + ",\n       ");
+                        dataList.Add("Mettings/Calls Count : " + activityDTO.count + ",<br>        ");
                         dataList.Add("Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score.Value));
 
                         HeroCard card = new HeroCard()
@@ -346,13 +350,18 @@ namespace JH_CRM_API.ChatDialogs
 
                         message.Attachments.Add(card.ToAttachment());
                         await context.PostAsync(message);
-                    }else
+                        PromptDialog.Choice<string>(context, ResumeAfterAgentCheckConfirmation,
+                                         new PromptOptions<string>("Would you like to check for another Sales Rep?",
+                                         "Selected action not available. Please choose another.", "Let me get you there...",
+                                         Constants.CONFIRMATION_OPTIONS, 0));
+                    }
+                    else
                     {
                         Boolean isIntentMatched = await this.CheckForIntent(context);
                         if (!isIntentMatched)
                         {
                             PromptDialog.Choice<string>(context, ResumeAfterAgentCheckConfirmation,
-                                           new PromptOptions<string>("Invalid Agent ID. Would you like to check for another customer?",
+                                           new PromptOptions<string>("Invalid Sales Rep ID. Would you like to check for another Sales Rep?",
                                            "Selected action not available. Please choose another.", "Let me get you there...",
                                            Constants.CONFIRMATION_OPTIONS, 0));
                         }
@@ -384,7 +393,7 @@ namespace JH_CRM_API.ChatDialogs
                 switch (confirmation.ToLower())
                 {
                     case Constants.CONFIRMATION_YES:
-                        PromptDialog.Text(context, ResumeAfterGetAgentID, "Agent Sales Connect Rep ID #?");
+                        PromptDialog.Text(context, ResumeAfterGetAgentID, "Sales Rep ID?");
                         break;
                     case Constants.CONFIRMATION_NO:
                         await this.ShowActionChoices(context, "What do you want to do next?");
@@ -421,7 +430,7 @@ namespace JH_CRM_API.ChatDialogs
                     {
                         Title = activityDTO.businessUnit,
                         //  Subtitle = "Your bots — wherever your users are talking",
-                        Text = "Overall Sentiment Score : "+ String.Format("{0:0.##}", activityDTO.score) +",\n         "+ " Meetings/Calls Count : " + activityDTO.count,
+                        Text = "Overall Sentiment Score : "+ String.Format("{0:0.##}", activityDTO.score) + ",<br>          " + " Meetings/Calls Count : " + activityDTO.count,
                         //Images = new List<CardImage> { new CardImage(Constants.JH_LOGO) },
 
                         //Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "View",

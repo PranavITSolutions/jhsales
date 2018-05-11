@@ -116,7 +116,7 @@ namespace JH_CRM_API.Repository
             {
                 using (IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings[Constants.SALES_DB_CONNECTION_STR_NAME].ConnectionString))
                 {
-                    string query = " SELECT  [ContactName] AS customerName, AVG(Sentiment_Score) AS score,[BusinessUnit] AS businessUnit,Count(*) AS meetings FROM [dbo].[Meetings]"
+                    string query = " SELECT  [ContactName] AS customerName, AVG(Sentiment_Score) AS score,[BusinessUnit] AS businessUnit,Count(*) AS count FROM [dbo].[Meetings]"
                         +" WHERE [Is_Processed] = 1 AND[ContactName] like '%"+ name+"%'  GROUP BY[ContactName],[BusinessUnit] ";
                     return db.Query<ActivityDTO>(query).FirstOrDefault();
                 }

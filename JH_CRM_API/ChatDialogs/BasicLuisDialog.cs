@@ -373,7 +373,7 @@ namespace JH_CRM_API.ChatDialogs
                     if (!isIntentMatched)
                     {
                         PromptDialog.Choice<string>(context, ResumeAfterAgentCheckConfirmation,
-                                       new PromptOptions<string>("Invalid Agent ID. Would you like to check for another customer?",
+                                       new PromptOptions<string>("Invalid Agent ID. Would you like to check for another Sales Rep?",
                                        "Selected action not available. Please choose another.", "Let me get you there...",
                                        Constants.CONFIRMATION_OPTIONS, 0));
                     }

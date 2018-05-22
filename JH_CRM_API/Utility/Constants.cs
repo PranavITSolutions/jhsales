@@ -11,14 +11,21 @@ namespace JH_CRM_API.Utility
         public const string ACTION_CHECK_CLIENT_PERFORMANCE = "Check Client Performance";
         public const string ACTION_CHECK_SALESREP_PERFORMANCE = "Check SalesRep Performance";
         public const string ACTION_PERFORMANCE_BY_BU = "Performance by Business Unit";
+        public const string ACTION_PERFORMANCE_BY_PRODUCTS = "Performance by Products";
         public const string ACTION_INVESTING_GUIDE = "JH Investing Guide";
         public const string ACTION_TOP_CLIENTS = "Top Performing Clients";
         public const string ACTION_CLIENTS_TO_FOCUS = "Clients to Focus";
+        public const string ACTION_SCHEDULE_MEETING = "SetUp Meeting";
+
 
         public const string ACTION_TOP_SALES_REP = "Top Performing sales reps";
         public const string ACTION_SALESREP_NEEDS_TRAINING = "Sales Reps - Need Training";
 
-
+        public static List<SendGrid.Helpers.Mail.EmailAddress> EMAILS = new List<SendGrid.Helpers.Mail.EmailAddress>
+                    {
+                        new SendGrid.Helpers.Mail.EmailAddress("paul.algreen@janushenderson.com","Paul Algreen"),
+                        new SendGrid.Helpers.Mail.EmailAddress("cyril.obot@janushenderson.com", "Cyril Obot")
+                    };
         public static List<String> ACTION_CHECK_SCORE_OPTIONS = new List<string> { "Customer", "Agent", "Business Unit","Product" };
         public static List<String> CONFIRMATION_OPTIONS = new List<string> { "Yes", "No" };
         public const string ACTION_CHECK_SCORE_OPTION_CUSTOMER = "Customer";
@@ -37,12 +44,14 @@ namespace JH_CRM_API.Utility
 
         public const string INTENT_CHECK_SALESREP_PERFORMANCE = "CheckSalesRepPerformance";
         public const string INTENT_PERFORMANCE_BY_BU = "PerformanceByBU";
+        public const string INTENT_PERFORMANCE_BY_PRODUCTS = "PerformanceByProducts";
         public const string INTENT_INVESTING_GUIDE = "JHInvestingGuide";
         public const string INTENT_MARKET_INSIGHTS = "MarketInsights";
         public const string INTENT_TOP_CLIENTS = "TopClients";
         public const string INTENT_CLIENTS_TO_FOCUS = "ClientsToFocus";
         public const string INTENT_TOP_SALESREP = "TopSalesRep";
         public const string INTENT_SALESREP_NEEDS_TRAINING = "NeedTraining";
+        public const string INTENT_SCHEDULE_MEETING = "ScheduleMeeting";
 
         //CRP BOT Constants
         public static string DB_CONNECTION_STR_NAME = "DBConnString";
@@ -74,5 +83,10 @@ namespace JH_CRM_API.Utility
         public const string FUND_FLEXIBLE_BOND = "Flexible Bond Fund";
         public const string FUND_MULTISECTOR = "Multi Sector Income Fund";
         public const string FUND_STRATEGIC = "Strategic Income Fund";
+
+
+
+        public const string REMEMBER_MEETING_TITLE = "meeting_title";
+        public const string REMEMBER_MEETING_TIMES = "meeting_time";
     }
 }

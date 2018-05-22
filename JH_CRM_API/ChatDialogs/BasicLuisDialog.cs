@@ -55,7 +55,7 @@ namespace JH_CRM_API.ChatDialogs
                     {
                         Title = activityDTO.customerName,
                         //  Subtitle = "Your bots — wherever your users are talking",
-                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score) + ",<br>          " + " Meetings/Calls Count : " + activityDTO.count,
+                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score.Value) + ",<br>          " + " Meetings/Calls Count : " + activityDTO.count,
                         //Images = new List<CardImage> { new CardImage(Constants.JH_LOGO) },
 
                         //Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "View",
@@ -89,7 +89,7 @@ namespace JH_CRM_API.ChatDialogs
                     {
                         Title = activityDTO.customerName,
                         //  Subtitle = "Your bots — wherever your users are talking",
-                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score) + ",<br>          " + " Meetings/Calls Count : " + activityDTO.count,
+                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score.Value) + ",<br>          " + " Meetings/Calls Count : " + activityDTO.count,
                         //Images = new List<CardImage> { new CardImage(Constants.JH_LOGO) },
 
                         //Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "View",
@@ -121,9 +121,9 @@ namespace JH_CRM_API.ChatDialogs
                 {
                     message.Attachments.Add(new HeroCard
                     {
-                        Title = activityDTO.customerName,
+                        Title = activityDTO.repId,
                         //  Subtitle = "Your bots — wherever your users are talking",
-                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score) + ",<br>           " + " Meetings/Calls Count : " + activityDTO.count,
+                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score.Value) + ",<br>           " + " Meetings/Calls Count : " + activityDTO.count,
                         //Images = new List<CardImage> { new CardImage(Constants.JH_LOGO) },
 
                         //Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "View",
@@ -155,9 +155,9 @@ namespace JH_CRM_API.ChatDialogs
                 {
                     message.Attachments.Add(new HeroCard
                     {
-                        Title = activityDTO.customerName,
+                        Title = activityDTO.repId,
                         //  Subtitle = "Your bots — wherever your users are talking",
-                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score) + ",<br>       " + " Meetings/Calls Count : " + activityDTO.count,
+                        Text = "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score.Value) + ",<br>       " + " Meetings/Calls Count : " + activityDTO.count,
                         //Images = new List<CardImage> { new CardImage(Constants.JH_LOGO) },
 
                         //Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "View",
@@ -419,7 +419,7 @@ namespace JH_CRM_API.ChatDialogs
         {
             try
             {
-                await context.PostAsync("Let me check for available Business Units...");
+                await context.PostAsync("Checking for Business Unit Performance...");
                 List<ActivityDTO> activities = BotRepo.GetPerformanceByBU();             
                 var message = context.MakeMessage();
                 message.AttachmentLayout = AttachmentLayoutTypes.Carousel;
@@ -430,7 +430,7 @@ namespace JH_CRM_API.ChatDialogs
                     {
                         Title = activityDTO.businessUnit,
                         //  Subtitle = "Your bots — wherever your users are talking",
-                        Text = "Overall Sentiment Score : "+ String.Format("{0:0.##}", activityDTO.score) + ",<br>          " + " Meetings/Calls Count : " + activityDTO.count,
+                        Text = "Overall Sentiment Score : "+ String.Format("{0:0.##}", activityDTO.score.Value) + ",<br> " + " Meetings/Calls Count : " + activityDTO.count,
                         //Images = new List<CardImage> { new CardImage(Constants.JH_LOGO) },
 
                         //Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "View",
@@ -438,6 +438,34 @@ namespace JH_CRM_API.ChatDialogs
                         //Tap = new CardAction(ActionTypes.OpenUrl, "",
                         //value: finance.fact_sheet_url                                           
                     }.ToAttachment());
+                }
+                await context.PostAsync(message);
+            }
+            catch (Exception)
+            {
+                await this.ShowLuisResult(context, "Bot returning an error. Please check later. Sorry!");
+            }
+        }
+
+
+        [LuisIntent("PerformanceByProduct")]
+        public async Task PerformanceByProductIntent(IDialogContext context, LuisResult result)
+        {
+            try
+            {
+                await context.PostAsync("Checking for Product Performance...");
+                List<ActivityDTO> activities = BotRepo.GetPerformanceByProduct();
+                var message = context.MakeMessage();
+                message.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+
+                foreach (ActivityDTO activityDTO in activities)
+                {
+                    //string val = String.Format("{0:0.##}", activityDTO.score.Value);
+                    message.Attachments.Add(new HeroCard
+                    {
+                        Title = activityDTO.productId,
+                        Text = "Product Name : " + activityDTO.productName+ ",<br>  "+" Meetings/Calls Count : " + activityDTO.count + ",<br>          " + "Overall Sentiment Score : " + String.Format("{0:0.##}", activityDTO.score.Value),
+                  }.ToAttachment());
                 }
                 await context.PostAsync(message);
             }
@@ -479,10 +507,12 @@ namespace JH_CRM_API.ChatDialogs
                     new CardAction(ActionTypes.ImBack, title: Constants.ACTION_CHECK_CLIENT_PERFORMANCE, value: Constants.ACTION_CHECK_CLIENT_PERFORMANCE),
                     new CardAction(ActionTypes.ImBack, title: Constants.ACTION_CHECK_SALESREP_PERFORMANCE, value: Constants.ACTION_CHECK_SALESREP_PERFORMANCE),
                     new CardAction(ActionTypes.ImBack, title: Constants.ACTION_PERFORMANCE_BY_BU, value: Constants.ACTION_PERFORMANCE_BY_BU),
+                    new CardAction(ActionTypes.ImBack, title: Constants.ACTION_PERFORMANCE_BY_PRODUCTS, value: Constants.ACTION_PERFORMANCE_BY_PRODUCTS),
                     new CardAction(ActionTypes.ImBack, title: Constants.ACTION_TOP_CLIENTS, value: Constants.ACTION_TOP_CLIENTS),
                     new CardAction(ActionTypes.ImBack, title: Constants.ACTION_CLIENTS_TO_FOCUS, value: Constants.ACTION_CLIENTS_TO_FOCUS),
-                     new CardAction(ActionTypes.ImBack, title: Constants.ACTION_TOP_SALES_REP, value: Constants.ACTION_TOP_SALES_REP),
+                    new CardAction(ActionTypes.ImBack, title: Constants.ACTION_TOP_SALES_REP, value: Constants.ACTION_TOP_SALES_REP),
                     new CardAction(ActionTypes.ImBack, title: Constants.ACTION_SALESREP_NEEDS_TRAINING, value: Constants.ACTION_SALESREP_NEEDS_TRAINING),
+                    new CardAction(ActionTypes.ImBack, title: Constants.ACTION_SCHEDULE_MEETING, value: Constants.ACTION_SCHEDULE_MEETING),
                     new CardAction(ActionTypes.ImBack, Constants.ACTION_GET_MARKET_INSIGHTS, value: Constants.ACTION_GET_MARKET_INSIGHTS),
                     new CardAction(ActionTypes.ImBack, Constants.ACTION_INVESTING_GUIDE, value: Constants.ACTION_INVESTING_GUIDE),
                     new CardAction(ActionTypes.ImBack, title: Constants.ACTION_GET_FACTSHEET, value: Constants.ACTION_GET_FACTSHEET),
@@ -1323,6 +1353,112 @@ namespace JH_CRM_API.ChatDialogs
         }
 
 
+        [LuisIntent("ScheduleMeeting")]
+        public async Task ScheduleMeetingIntent(IDialogContext context, LuisResult result)
+        {
+            try
+            {
+                PromptDialog.Text(context, ResumeAfterGetMeetingTitleValue, "Please give a meeting title");
+            }
+            catch(Exception exception)
+            {
+                Debug.WriteLine(exception.GetBaseException());
+                await this.ShowLuisResult(context, "Bot returning an error. Please check later. Sorry!");
+            }
+        }
+
+        private async Task ResumeAfterGetMeetingTitleValue(IDialogContext context, IAwaitable<string> result)
+        {
+            try
+            {
+                string title = await result;
+                //await context.PostAsync("Checking for availability...");
+                if (title != null)
+                {
+                    //Boolean isIntentMatched =  await this.CheckForIntent(context);
+                    //if (!isIntentMatched)
+                    //{
+                    context.ConversationData.SetValue(Constants.REMEMBER_MEETING_TITLE, title);
+                    List<string> MEETING_TIMES = new List<string>();
+                    MEETING_TIMES.Add(Utils.GetNextWeekday(DateTime.UtcNow.DayOfWeek).Date.ToString("ddd, dd MMMM yyyy") + " | 11:00 - 11:30");
+                    MEETING_TIMES.Add(Utils.GetNextWeekday(DateTime.UtcNow.DayOfWeek).Date.ToString("ddd, dd MMMM yyyy") + " | 13:30 - 14:00");
+                    context.ConversationData.SetValue(Constants.REMEMBER_MEETING_TIMES, MEETING_TIMES);
+                    PromptDialog.Choice<string>(context, MeetingTimeChoiceReceivedAsync,
+                            new PromptOptions<string>("Choose from availability",
+                            "Invalid choice. Please choose another.", "Let me get you there...",
+                           MEETING_TIMES, 0));
+                    // }
+                }
+                else
+                {
+                    PromptDialog.Text(context, ResumeAfterGetMeetingTitleValue, "Please give a valid meeting title");
+                }
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception.GetBaseException());
+                await this.ShowLuisResult(context, "Bot returning an error. Please check later. Sorry!");
+            }
+        }
+
+
+        private async Task MeetingTimeChoiceReceivedAsync(IDialogContext context, IAwaitable<string> result)
+        {
+            try
+            {
+                string time = await result;
+                await context.PostAsync("Setting up the meeting...");
+                if (time != null)
+                {
+                    if (context.ConversationData.GetValue<List<string>>(Constants.REMEMBER_MEETING_TIMES).Contains(time))
+                    {
+                      
+                        if (time.Contains("11:00 - 11:30"))
+                        {
+                            //                    TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow + new TimeSpan(11, 0, 0),
+                            //TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time"));
+                            //new DateTime("2018-04-24 11:12 PM")
+
+                            await context.PostAsync("Sending the meeting invite...");
+                            await MailHandler.SendMeetingInvite(context.ConversationData.GetValue<string>(Constants.REMEMBER_MEETING_TITLE),
+                               Utils.GetNextWeekday(DateTime.UtcNow.DayOfWeek).Date + new TimeSpan(11, 0, 0),
+                               Utils.GetNextWeekday(DateTime.UtcNow.DayOfWeek).Date + new TimeSpan(11, 30, 0));
+                            await context.PostAsync("Scheduled meeting On " + time);
+                        }
+                        else if (time.Contains("13:30 - 14:00"))
+                        {
+                            await context.PostAsync("Sending the meeting invite...");
+                            await MailHandler.SendMeetingInvite( context.ConversationData.GetValue<string>(Constants.REMEMBER_MEETING_TITLE),
+                                Utils.GetNextWeekday(DateTime.UtcNow.DayOfWeek).Date + new TimeSpan(13, 30, 0),
+                               Utils.GetNextWeekday(DateTime.UtcNow.DayOfWeek).Date + new TimeSpan(14, 0, 0));
+                            await context.PostAsync("Scheduled meeting On " + time);
+                        }
+                    }
+                    else
+                    {
+                        await this.CheckForIntent(context);
+                    }
+                }
+                else
+                {
+                    PromptDialog.Choice<string>(context, MeetingTimeChoiceReceivedAsync,
+                           new PromptOptions<string>("Choose from availability",
+                           "Invalid choice. Please choose another.", "Let me get you there...",
+                          context.ConversationData.GetValue<List<string>>(Constants.REMEMBER_MEETING_TIMES), 0));
+                }
+            }
+            catch (TooManyAttemptsException)
+            {
+                await this.CheckForIntent(context);
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception.GetBaseException());
+                await this.ShowLuisResult(context, "Bot returning an error. Please check later. Sorry!");
+            }
+        }
+
+
 
         private async Task<Boolean> CheckForIntent(IDialogContext context)
         {
@@ -1375,6 +1511,14 @@ namespace JH_CRM_API.ChatDialogs
                         case Constants.INTENT_SALESREP_NEEDS_TRAINING:
                             isIntentMatched = true;
                             await this.NeedTrainingIntent(context, null);
+                            break;
+                        case Constants.INTENT_PERFORMANCE_BY_PRODUCTS:
+                            isIntentMatched = true;
+                            await this.PerformanceByProductIntent(context, null);
+                            break;
+                        case Constants.INTENT_SCHEDULE_MEETING:
+                            isIntentMatched = true;
+                            await this.ScheduleMeetingIntent(context, null);
                             break;
 
                             //case Constants.INTENT_THANK:

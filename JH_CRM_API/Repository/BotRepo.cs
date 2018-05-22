@@ -168,6 +168,28 @@ namespace JH_CRM_API.Repository
         }
 
 
+
+        public static List<ActivityDTO> GetPerformanceByProduct()
+        {
+            try
+            {
+                using (IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings[Constants.SALES_DB_CONNECTION_STR_NAME].ConnectionString))
+                {
+                    string query = "SELECT DISTINCT MDH_MSTR_PRODUCT_ID as productId,ps.STRATEGY_NM AS productName,COUNT(*) AS count,AVG(mt.Sentiment_Score) AS score "
+                        + " FROM Product_static ps with(nolock) INNER JOIN advinteract ad with(nolock) on ad.MDH_Master_product_id = ps.MDH_MSTR_PRODUCT_ID INNER JOIN Meetings mt with(nolock)  on mt.activityid = ad.activity_id"
+                        + " WHERE MDH_MSTR_PRODUCT_ID <> 0 GROUP BY MDH_MSTR_PRODUCT_ID, ps.STRATEGY_NM ORDER BY Avg(mt.Sentiment_Score) DESC";
+                    return db.Query<ActivityDTO>(query).ToList();
+                }
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception.Message);
+                Debug.WriteLine(exception.GetBaseException());
+                throw exception;
+            }
+        }
+
+
         public static List<ActivityDTO> GetSalesRepNeedsTraining()
         {
             try

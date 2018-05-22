@@ -16,5 +16,8 @@ namespace JH_CRM_API.Models
         public string salesRepName { get; set; }
 
         public string repId { get; set; }
+
+        public string productId { get; set; }
+        public string productName { get; set; }
     }
 }
